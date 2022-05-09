@@ -40,7 +40,6 @@ namespace Surfaseprite.SceneViewer
 
             var image = new Image {Source = bitmap};
             image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.NearestNeighbor);
-            image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.NearestNeighbor);
 
             var brush = new VisualBrush
             {

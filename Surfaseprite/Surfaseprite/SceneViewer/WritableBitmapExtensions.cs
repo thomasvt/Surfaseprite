@@ -33,5 +33,26 @@ namespace Surfaseprite.SceneViewer
                 ArrayPool<byte>.Shared.Return(pixels);
             }
         }
+
+        /// <summary>
+        /// Allows to update the pixel data in one read+write operation to the gpu.
+        /// </summary>
+        public static WriteableBitmap UpdatePixelsIntoNewBitmap(this WriteableBitmap bitmap, PixelUpdateAction updateAction)
+        {
+            var length = bitmap.PixelWidth * bitmap.PixelHeight * 4;
+            var pixels = ArrayPool<byte>.Shared.Rent(length);
+            try
+            {
+                var newBitmap = new WriteableBitmap(bitmap.PixelWidth, bitmap.PixelHeight, 96, 96, bitmap.Format, null);
+                bitmap.CopyPixels(pixels, bitmap.BackBufferStride, 0);
+                updateAction(new Span<byte>(pixels, 0, length));
+                newBitmap.WritePixels(new Int32Rect(0, 0, bitmap.PixelWidth, bitmap.PixelHeight), pixels, bitmap.BackBufferStride, 0);
+                return newBitmap;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(pixels);
+            }
+        }
     }
 }

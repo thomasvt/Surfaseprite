@@ -215,6 +215,15 @@ namespace Surfaseprite.SceneViewer
             _nodeItemFromId.Add(nodeId, nodeItem);
         }
 
+        internal void ReplaceBitmap(uint sceneItemId, WriteableBitmap bitmap)
+        {
+            var item = _nodeItemFromId[sceneItemId];
+            item.Bitmap = bitmap;
+            var visual = item.Visual as ModelVisual3D;
+            var model = visual.Content as GeometryModel3D;
+            (((model.Material as DiffuseMaterial).Brush as VisualBrush).Visual as Image).Source = bitmap;
+        }
+
         public void RemoveSceneItem(ulong nodeId)
         {
             var visual = _nodeItemFromId[nodeId].Visual;

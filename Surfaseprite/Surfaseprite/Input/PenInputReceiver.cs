@@ -29,10 +29,14 @@ namespace Surfaseprite.Input
             e.Handled = true;
         }
 
-        private static void HostPanel_StylusDown(object sender, StylusDownEventArgs e)
+        private void HostPanel_StylusDown(object sender, StylusDownEventArgs e)
         {
             if (e.IsFromTouchDevice())
-                return; // we focus on pen events in this Receiver.
+                return; // not a pen, we focus on pen events in this Receiver.
+
+            var deviceInfo = new DeviceInfo(e.StylusDevice.Id, DeviceType.Pen);
+            _paintInputProcessor.StartStroke(deviceInfo);
+            _paintInputProcessor.AddStrokePoint(deviceInfo.Id, e.GetPosition(_hostPanel));
 
             e.Handled = true;
         }

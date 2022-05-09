@@ -20,29 +20,41 @@ namespace Surfaseprite
         {
             InitializeComponent();
 
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.Default;
+
             _paintInput = new PaintInputProcessor(SceneViewportPanel);
             _paintInput.DotPlaced += args =>
             {
-                var hit = SceneViewport.ScreenPick(args.Location);
-                if (hit != null)
-                    PaintPixel(hit.SceneItem.Bitmap, hit.HitTexelCoords);
+                Dispatcher.Invoke(() =>
+                {
+                    var hit = SceneViewport.ScreenPick(args.Location);
+                    if (hit != null)
+                        PaintPixel(hit.SceneItem.Bitmap, hit.HitTexelCoords);
+                });
             };
             _paintInput.StrokePointAdded += args =>
             {
-                var hit = SceneViewport.ScreenPick(args.Stroke.Points.Last());
-                if (hit != null)
-                    PaintPixel(hit.SceneItem.Bitmap, hit.HitTexelCoords);
+                Dispatcher.Invoke(() =>
+                {
+                    var hit = SceneViewport.ScreenPick(args.Stroke.Points.Last());
+                    if (hit != null)
+                        PaintPixel(hit.SceneItem.Bitmap, hit.HitTexelCoords);
+                });
             };
         }
 
         private void PaintPixel(WriteableBitmap bitmap, Vector2 location)
         {
             var offset = ((int)location.Y * bitmap.PixelWidth + (int)location.X) * 4;
-            bitmap.UpdatePixels(pixels =>
+            
+            bitmap = bitmap.UpdatePixelsIntoNewBitmap(pixels =>
             {
-                pixels[offset] = 255;
-                pixels[offset + 1] = 255;
+                pixels[offset] = 200;
+                pixels[offset + 1] = 200;
+                pixels[offset + 2] = 000;
+                pixels[offset + 3] = 200;
             });
+            SceneViewport.ReplaceBitmap(1u, bitmap);
             SceneViewport.InvalidateVisual();
         }
 
@@ -53,13 +65,12 @@ namespace Surfaseprite
             bitmap.CopyPixels(pixels, bitmap.BackBufferStride, 0);
             for (var i = 0; i < pixels.Length; i++)
             {
-                pixels[i] = 122;
+                pixels[i] = 100;
             }
             bitmap.WritePixels(new Int32Rect(0, 0, 100, 100), pixels, bitmap.BackBufferStride, 0);
             
             SceneViewport.AddSceneItem(1u, bitmap);
-            SceneViewport.SetTransform(1u, Matrix3x2.CreateScale(4));
-            SceneViewport.InvalidateVisual();
+            SceneViewport.SetTransform(1u, Matrix3x2.CreateScale(8));
         }
     }
 }

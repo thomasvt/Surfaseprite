@@ -18,7 +18,7 @@ namespace Surfaseprite.SceneViewer
         /// <summary>
         /// A direct reference to the WPF resource of the bitmap.
         /// </summary>
-        public readonly WriteableBitmap Bitmap;
+        public WriteableBitmap Bitmap { get; internal set; }
 
         /// <summary>
         /// The graphical WPF item inside the viewport representing the Node.
