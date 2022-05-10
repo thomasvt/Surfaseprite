@@ -55,7 +55,7 @@ namespace Surfaseprite
                 pixels[offset + 3] = 200;
             });
             SceneViewport.ReplaceBitmap(1u, bitmap);
-            SceneViewport.InvalidateVisual();
+            //SceneViewport.InvalidateVisual();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
